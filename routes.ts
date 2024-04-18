@@ -1,14 +1,20 @@
 /**
- * The default redirect path after successful login.
+ * The default root route.
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_ROOT_ROUTE = "/";
 
 /**
  * The route for login. This route is used for login purposes.
  * @type {string}
  */
-export const LOGIN_ROUTE = "/auth/login";
+export const LOGIN_ROUTE: string = "/auth/login";
+
+/**
+ * The route for settings. This route is available only for authenticated users.
+ * @type {string}
+ */
+export const SETTINGS_ROUTE: string = "/settings";
 
 /**
  * The route for register. This route is used for register purposes.
@@ -17,12 +23,18 @@ export const LOGIN_ROUTE = "/auth/login";
 export const REGISTER_ROUTE = "/auth/register";
 
 /**
+ * The default redirect path after successful login.
+ * @type {string}
+ */
+export const DEFAULT_LOGIN_REDIRECT = SETTINGS_ROUTE;
+
+/**
  * An array of public routes.
  * These routes are accessible without authentication
  * @type {string[]}
  * **/
 export const publicRoutes = [
-  "/"
+  DEFAULT_ROOT_ROUTE
 ];
 
 /**
