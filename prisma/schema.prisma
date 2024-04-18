@@ -13,15 +13,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?         @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   password      String?
+  role          UserRole  @default(USER)
   accounts      Account[]
+  loginStatId   String?   @unique
 
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model UserLoginStat {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId @unique
+  timestamp String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
