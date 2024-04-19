@@ -23,3 +23,19 @@ export const getUserById = async (id: string) => {
     console.log(e)
   }
 }
+
+export const getUserLoginStats = async (userId?: string) => {
+  if (!userId) {
+    return null
+  }
+
+  try {
+    return await db.userLoginStat.findUnique({
+      where: {
+        userId
+      }
+    });
+  } catch (e) {
+    console.log(e)
+  }
+}
