@@ -2,6 +2,8 @@ import { hasISOStringFormat } from '@/lib/helpers/is-iso-string';
 import { hasTimestampFormat } from '@/lib/helpers/is-timestamp';
 
 export const getTimeDifferenceString = ({ startTime, endTime }: {startTime: string, endTime: string}) => {
+  console.log('startTime: >>', startTime);
+  console.log('endTime: >>', endTime);
   if (!hasISOStringFormat(startTime)) {
     return 'params error: startTime is not an ISO string';
   }

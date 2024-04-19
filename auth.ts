@@ -25,12 +25,12 @@ export const {
     signIn: async ({ user, account, profile, email, credentials }) => {
       if (user.id) {
         try {
-          await db.userLoginStat.update({
+          await db.profile.update({
             where: {
               userId: user.id
             },
             data: {
-              timestamp: new Date().toISOString()
+              loginTime: new Date().toISOString()
             }
           })
         } catch (e) {

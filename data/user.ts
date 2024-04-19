@@ -24,13 +24,13 @@ export const getUserById = async (id: string) => {
   }
 }
 
-export const getUserLoginStats = async (userId?: string) => {
+export const getUserProfile = async (userId?: string) => {
   if (!userId) {
     return null
   }
 
   try {
-    return await db.userLoginStat.findUnique({
+    return await db.profile.findUnique({
       where: {
         userId
       }

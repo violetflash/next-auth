@@ -23,33 +23,18 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     return { error: "Email already in use" };
   }
 
-  const user = await db.user.create({
+  await db.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
+      profile: {
+        create: {
+          loginTime: new Date().toISOString(),
+        }
+      }
     }
   });
-
-  if (user) {
-    const loginStat = await db.userLoginStat.create({
-      data: {
-        userId: user.id,
-        timestamp: new Date().toISOString(),
-      }
-    })
-
-    if (loginStat) {
-      await db.user.update({
-        where: {
-          id: user.id
-        },
-        data: {
-          loginStatId: loginStat.id
-        }
-      })
-    }
-  }
 
   //TODO Send verification token email
 
