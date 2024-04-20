@@ -10,6 +10,7 @@ export const { auth } = NextAuth(authConfig)
 
 // Middleware that runs on every request
 export default auth((req) => {
+  // we want to know is the user is admin or not here inside the middleware
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
@@ -34,7 +35,6 @@ export default auth((req) => {
   }
 
   if (!isPublicRoute && !isLoggedIn) {
-    console.log('STUCK HERE?')
     // if the user is not logged in and trying to access a public route
     // -> redirect him to the login page
     return Response.redirect(new URL(LOGIN_ROUTE, nextUrl)); // second param is the base url to create an absolute url

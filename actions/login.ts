@@ -32,7 +32,6 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
           return { error: "Something went wrong during login" };
       }
     }
-
     throw e; // mandatory thing for redirection to DEFAULT_LOGIN_REDIRECT logic
   }
 }
