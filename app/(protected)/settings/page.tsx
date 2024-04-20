@@ -1,6 +1,6 @@
 import { auth, signOut } from '@/auth';
 import { Button } from '@/components/ui/button';
-import { getUserProfile } from '@/data/user';
+import { getUserLoginTime, getUserProfile, refreshUserLoginTime } from '@/data/user';
 import { getTimeDifferenceString } from '@/lib/helpers/get-time-difference-string';
 
 type Props = {
@@ -8,13 +8,14 @@ type Props = {
 };
 const SettingsPage = async (props: Props) => {
   const session = await auth();
-  const userStatsInfo = await getUserProfile(session?.user?.id);
+  const userStatsInfo = await getUserLoginTime(session?.user?.id);
+
   return (
     <div>
       {JSON.stringify(session, null, 2)}
       {userStatsInfo && (
         <div>
-          Since last login: {getTimeDifferenceString({
+          Since your last visit: {getTimeDifferenceString({
           startTime: userStatsInfo?.loginTime,
           endTime: new Date().toISOString()
         })}
@@ -23,6 +24,7 @@ const SettingsPage = async (props: Props) => {
       <form
         action={async () => {
           "use server";
+          await refreshUserLoginTime(session?.user?.id);
           await signOut();
         }}
       >

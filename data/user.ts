@@ -12,7 +12,11 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: string) => {
+export const getUserById = async (id?: string) => {
+  if (!id) {
+    return null
+  }
+
   try {
     return await db.user.findUnique({
       where: {
@@ -29,11 +33,44 @@ export const getUserProfile = async (userId?: string) => {
     return null
   }
 
+  const profile = await db.profile.findUnique({
+    where: { userId },
+    select: { loginTime: true }
+  });
+
   try {
     return await db.profile.findUnique({
       where: {
         userId
       }
+    });
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const getUserLoginTime = async (userId?: string) => {
+  if (!userId) {
+    return null
+  }
+  try {
+    return await db.profile.findUnique({
+      where: { userId },
+      select: { loginTime: true }
+    });
+  } catch (e) {
+    console.log(e)
+  }
+};
+
+export const refreshUserLoginTime = async (userId?: string) => {
+  if (!userId) {
+    return null
+  }
+  try {
+    return await db.profile.update({
+      where: { userId },
+      data: { loginTime: new Date().toISOString() }
     });
   } catch (e) {
     console.log(e)
