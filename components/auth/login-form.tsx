@@ -6,8 +6,11 @@ import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LOGIN_ROUTE } from '@/routes';
 import { LoginSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import * as React from 'react';
 import {
   FormLabel,
@@ -24,6 +27,11 @@ type Props = {
 
 };
 export const LoginForm = (props: Props) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const urlError = searchParams.get('error');
+  const oauthMessage = urlError=== "OAuthAccountNotLinked"
+  ? "Email already in use with different provider" : undefined;
   const [isPending, startTransition] = React.useTransition();
   const [error, setError] = React.useState<string | undefined>();
   const [success, setSuccess] = React.useState<string | undefined>();
@@ -41,11 +49,20 @@ export const LoginForm = (props: Props) => {
     setSuccess(undefined);
     startTransition(() => {
       login(data).then((res) => {
-        setError(res.error);
-        setSuccess(res.success);
+        setError(res?.error);
+        // TODO: add when we add 2FA
+        // setSuccess(res.success);
       })
     })
   }
+
+  useEffect(() => {
+    if (oauthMessage) {
+      setError(oauthMessage);
+      router.push(LOGIN_ROUTE);
+    }
+  }, [oauthMessage])
+
   return (
     <CardWrapper
       headerLabel="Welcome back"

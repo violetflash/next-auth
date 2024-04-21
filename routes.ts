@@ -10,6 +10,9 @@ export const DEFAULT_ROOT_ROUTE = "/";
  */
 export const LOGIN_ROUTE: string = "/auth/login";
 
+
+export const AUTH_ERROR_ROUTE: string = "/auth/error";
+
 /**
  * The route for settings. This route is available only for authenticated users.
  * @type {string}
@@ -44,7 +47,8 @@ export const publicRoutes = [
  **/
 export const authRoutes: string[] = [
   LOGIN_ROUTE,
-  REGISTER_ROUTE
+  REGISTER_ROUTE,
+  AUTH_ERROR_ROUTE
 ]
 
 /**
