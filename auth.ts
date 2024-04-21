@@ -1,4 +1,5 @@
 import { getUserById, getUserLoginTime, getUserProfile, refreshUserLoginTime } from '@/data/user';
+import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/routes';
 import NextAuth, {type DefaultSession  } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
@@ -55,8 +56,8 @@ export const {
       return token;
     },
     signIn: async ({ user, account, profile, email, credentials }) => {
-      const existingUser = await getUserById(user?.id);
-      if (!existingUser) return false;
+      // const existingUser = await getUserById(user?.id);
+      // if (!existingUser) return false;
       // if (!existingUser || !existingUser.emailVerified) return false;
       if (profile && !profile.loginTime) {
         try {
@@ -66,6 +67,18 @@ export const {
         }
       }
       return true;
+    }
+  },
+  pages: {
+    signIn: LOGIN_ROUTE,
+    error: AUTH_ERROR_ROUTE
+  },
+  events: {
+    async linkAccount({ account, profile, user }) {
+      await  db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() }
+      })
     }
   },
   adapter: PrismaAdapter(db),

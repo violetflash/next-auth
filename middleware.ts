@@ -11,7 +11,7 @@ export const { auth } = NextAuth(authConfig)
 // Middleware that runs on every request
 export default auth((req) => {
   // we want to know is the user is admin or not here inside the middleware
-  const { nextUrl } = req;
+  const { nextUrl } = req; // nextUrl is the base url to create an absolute url
   const isLoggedIn = !!req.auth;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
