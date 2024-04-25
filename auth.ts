@@ -56,9 +56,6 @@ export const {
       return token;
     },
     signIn: async ({ user, account, profile, email, credentials }) => {
-      // const existingUser = await getUserById(user?.id);
-      // if (!existingUser) return false;
-      // if (!existingUser || !existingUser.emailVerified) return false;
       if (profile && !profile.loginTime) {
         try {
           await refreshUserLoginTime(user.id);
@@ -66,6 +63,17 @@ export const {
           console.log('error while refreshing login time: >>', e);
         }
       }
+      // Allow everything (OAuth) without email verification except for "Credentials"
+      // TODO be careful with this check if you want to use more OAuth providers
+      // TODO because verification will only be checked with "Credentials" login type
+      if (account?.provider !== "credentials") return true;
+
+      // For credentials case
+      const existingUser = await getUserById(user?.id);
+      // Prevent from signing in without email verification
+      if (!existingUser?.emailVerified) return false;
+
+      // TODO Add 2FA check
       return true;
     }
   },
