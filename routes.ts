@@ -30,6 +30,7 @@ export const REGISTER_ROUTE = "/auth/register";
  * @type {string}
  */
 export const DEFAULT_LOGIN_REDIRECT = SETTINGS_ROUTE;
+export const VERIFICATION_ROUTE = "/auth/new-verification";
 
 /**
  * An array of public routes.
@@ -37,7 +38,8 @@ export const DEFAULT_LOGIN_REDIRECT = SETTINGS_ROUTE;
  * @type {string[]}
  * **/
 export const publicRoutes = [
-  DEFAULT_ROOT_ROUTE
+  DEFAULT_ROOT_ROUTE,
+  VERIFICATION_ROUTE
 ];
 
 /**

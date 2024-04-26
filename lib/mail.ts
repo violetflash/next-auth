@@ -1,10 +1,12 @@
+import { VERIFICATION_ROUTE } from '@/routes';
 import { Resend } from 'resend';
+export const TOKEN_QUERY_PARAM = 'token';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (email: string, token: string) => {
 
-  const confirmationUrl = `http://localhost:3000/auth/new-verification?token=${token}`;
+  const confirmationUrl = `http://localhost:3000/auth${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
   try {
     const response = await resend.emails.send({
@@ -18,6 +20,6 @@ export const sendVerificationEmail = async (email: string, token: string) => {
       `
     });
   } catch (e) {
-
+    console.log('e: >>', e);
   }
 }

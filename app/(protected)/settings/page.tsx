@@ -24,7 +24,8 @@ const SettingsPage = async (props: Props) => {
       <form
         action={async () => {
           "use server";
-          await refreshUserLoginTime(session?.user?.id);
+          // TODO Error if user logged in by OAuth
+          // await refreshUserLoginTime(session?.user?.id);
           await signOut();
         }}
       >
