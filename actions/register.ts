@@ -39,10 +39,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   });
 
   const verificationToken = await generatedVerificationToken(email);
-
-
-  //TODO Send verification token email
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+
 
   return { success: "Confirmation email sent" };
 }

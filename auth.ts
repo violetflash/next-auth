@@ -1,10 +1,10 @@
-import { getUserById, getUserLoginTime, getUserProfile, refreshUserLoginTime } from '@/data/user';
-import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/routes';
-import NextAuth, {type DefaultSession  } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "@/lib/db";
 import authConfig from "@/auth.config"
+import { getUserById } from '@/data/user';
+import { db } from "@/lib/db";
+import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/lib/routes-constants';
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from '@prisma/client';
+import NextAuth, { type DefaultSession } from "next-auth"
 
 declare module "next-auth" {
   /**

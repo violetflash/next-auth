@@ -1,6 +1,6 @@
+import { TOKEN_QUERY_PARAM } from '@/lib/constants';
 import { VERIFICATION_ROUTE } from '@/routes';
 import { Resend } from 'resend';
-export const TOKEN_QUERY_PARAM = 'token';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
