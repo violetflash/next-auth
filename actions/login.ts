@@ -1,6 +1,7 @@
 "use server";
 import { signIn } from '@/auth';
 import { getUserByEmail } from '@/data/user';
+import { sendVerificationEmail } from '@/lib/mail';
 import { generatedVerificationToken } from '@/lib/tokens';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { LoginSchema } from '@/schemas';
@@ -12,7 +13,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validated = LoginSchema.safeParse(values);
 
 
-  // we gonna use these errors in the fields components
+  // we're going to use these errors in the fields components
   if (!validated.success) {
     return {  error: "Invalid fields" };
   }
@@ -27,9 +28,11 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Email does not exist" };
   }
 
+
   if (existingUser && !existingUser.emailVerified) {
     const verificationToken = await generatedVerificationToken(existingUser.email);
 
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
     return { success: "Confirmation email sent!" };
   }
 

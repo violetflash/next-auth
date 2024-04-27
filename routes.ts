@@ -1,35 +1,10 @@
-/**
- * The default root route.
- * @type {string}
- */
-export const DEFAULT_ROOT_ROUTE = "/";
-
-/**
- * The route for login. This route is used for login purposes.
- * @type {string}
- */
-export const LOGIN_ROUTE: string = "/auth/login";
-
-
-export const AUTH_ERROR_ROUTE: string = "/auth/error";
-
-/**
- * The route for settings. This route is available only for authenticated users.
- * @type {string}
- */
-export const SETTINGS_ROUTE: string = "/settings";
-
-/**
- * The route for register. This route is used for register purposes.
- * @type {string}
- */
-export const REGISTER_ROUTE = "/auth/register";
-
-/**
- * The default redirect path after successful login.
- * @type {string}
- */
-export const DEFAULT_LOGIN_REDIRECT = SETTINGS_ROUTE;
+import {
+  AUTH_ERROR_ROUTE, DEFAULT_LOGIN_REDIRECT,
+  DEFAULT_ROOT_ROUTE,
+  LOGIN_ROUTE,
+  REGISTER_ROUTE,
+  VERIFICATION_ROUTE
+} from '@/lib/routes-constants';
 
 /**
  * An array of public routes.
@@ -37,7 +12,8 @@ export const DEFAULT_LOGIN_REDIRECT = SETTINGS_ROUTE;
  * @type {string[]}
  * **/
 export const publicRoutes = [
-  DEFAULT_ROOT_ROUTE
+  DEFAULT_ROOT_ROUTE,
+  VERIFICATION_ROUTE
 ];
 
 /**
@@ -59,10 +35,3 @@ export const authRoutes: string[] = [
 export const protectedRoutes = [
   DEFAULT_LOGIN_REDIRECT
 ];
-
-/**
- * The prefix of the API authentication routes.
- * Routes that start with this prefix are used for API authentication purposes.
- * @type {string}
- */
-export const apiAuthPrefix = "/api/auth";

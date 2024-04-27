@@ -1,5 +1,5 @@
 import { CardWrapper } from '@/components/auth/card-wrapper';
-import { LOGIN_ROUTE } from '@/routes';
+import { LOGIN_ROUTE } from '@/lib/routes-constants';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 
 export const ErrorCard = ({ children }: { children: React.ReactNode }) => {

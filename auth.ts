@@ -1,10 +1,10 @@
-import { getUserById, getUserLoginTime, getUserProfile, refreshUserLoginTime } from '@/data/user';
-import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/routes';
-import NextAuth, {type DefaultSession  } from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "@/lib/db";
 import authConfig from "@/auth.config"
+import { getUserById } from '@/data/user';
+import { db } from "@/lib/db";
+import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/lib/routes-constants';
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from '@prisma/client';
+import NextAuth, { type DefaultSession } from "next-auth"
 
 declare module "next-auth" {
   /**
@@ -33,7 +33,7 @@ export const {
   callbacks: {
     // https://next-auth.js.org/configuration/callbacks
     async session({ session, token }) {
-      console.log('token: >>', token);
+      // get user id from session token
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -56,17 +56,24 @@ export const {
       return token;
     },
     signIn: async ({ user, account, profile, email, credentials }) => {
-      if (profile && !profile.loginTime) {
-        try {
-          await refreshUserLoginTime(user.id);
-        } catch (e) {
-          console.log('error while refreshing login time: >>', e);
-        }
-      }
+      console.log({
+        user, account
+      })
+
+      // TODO тут проблема при авторизации через OAuth, призма кидает ошибку в консоль
+      // if (profile && !profile.loginTime) {
+      //   try {
+      //     await refreshUserLoginTime(user.id);
+      //   } catch (e) {
+      //     console.log('error while refreshing login time: >>', e);
+      //   }
+      // }
+
+
       // Allow everything (OAuth) without email verification except for "Credentials"
       // TODO be careful with this check if you want to use more OAuth providers
       // TODO because verification will only be checked with "Credentials" login type
-      if (account?.provider !== "credentials") return true;
+      if (account?.type !== "credentials") return true;
 
       // For credentials case
       const existingUser = await getUserById(user?.id);

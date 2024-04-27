@@ -8,23 +8,24 @@ type Props = {
 };
 const SettingsPage = async (props: Props) => {
   const session = await auth();
-  const userStatsInfo = await getUserLoginTime(session?.user?.id);
+  // const userStatsInfo = await getUserLoginTime(session?.user?.id);
 
   return (
     <div>
       {JSON.stringify(session, null, 2)}
-      {userStatsInfo && (
-        <div>
-          Since your last visit: {getTimeDifferenceString({
-          startTime: userStatsInfo?.loginTime,
-          endTime: new Date().toISOString()
-        })}
-        </div>
-      )}
+      {/*{userStatsInfo && (*/}
+      {/*  <div>*/}
+      {/*    Since your last visit: {getTimeDifferenceString({*/}
+      {/*    startTime: userStatsInfo?.loginTime,*/}
+      {/*    endTime: new Date().toISOString()*/}
+      {/*  })}*/}
+      {/*  </div>*/}
+      {/*)}*/}
       <form
         action={async () => {
           "use server";
-          await refreshUserLoginTime(session?.user?.id);
+          // TODO Error if user logged in by OAuth
+          // await refreshUserLoginTime(session?.user?.id);
           await signOut();
         }}
       >
