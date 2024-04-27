@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendVerificationEmail = async (email: string, token: string) => {
 
-  const confirmationUrl = `http://localhost:3000/auth${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
+  const confirmationUrl = `http://localhost:3000${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
   try {
     const response = await resend.emails.send({
@@ -17,7 +17,10 @@ export const sendVerificationEmail = async (email: string, token: string) => {
         <h1>Please confirm your email</h1>
         <p>Please confirm your email by clicking on the following link</p>
         <a href="${confirmationUrl}">${confirmationUrl}</a>
-      `
+      `,
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      }
     });
   } catch (e) {
     console.log('e: >>', e);
