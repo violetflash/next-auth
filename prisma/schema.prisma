@@ -75,3 +75,13 @@ model VerificationToken {
 
   @@unique([email, token]) // unique rule for the combination of email and token
 }
+
+// we don't reuse verification token. It is safer to keep them separated
+model ResetPasswordToken { //
+  id String @id @default(cuid())
+  email String
+  token String @unique
+  expires DateTime
+
+  @@unique([email, token])
+}

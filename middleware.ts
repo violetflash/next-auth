@@ -1,10 +1,8 @@
 import authConfig from '@/auth.config';
 import { apiAuthPrefix, DEFAULT_LOGIN_REDIRECT, LOGIN_ROUTE } from '@/lib/routes-constants';
+import { authRoutes, publicRoutes, } from "@/routes";
 import NextAuth from "next-auth";
-import {
-  authRoutes,
-  publicRoutes,
-} from "@/routes";
+
 export const { auth } = NextAuth(authConfig)
 
 // Middleware that runs on every request
@@ -17,7 +15,8 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  // order of this "if" clauses is important
+  // order of all of this "if" clauses is important
+
   if (isApiAuthRoute) {
     // allow every single api auth route
     // e.g. localhost:3000/api/auth/providers.

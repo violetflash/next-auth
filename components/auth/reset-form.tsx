@@ -1,68 +1,55 @@
-'use client';
 // @flow
-import { login } from '@/actions/login';
+'use client';
+import { resetPassword } from '@/actions/reset-password';
 import { CardWrapper } from '@/components/auth/card-wrapper';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LOGIN_ROUTE, RESET_PASSWORD_ROUTE } from '@/lib/routes-constants';
-import { LoginSchema } from '@/schemas';
+import { LOGIN_ROUTE } from '@/lib/routes-constants';
+import { ResetPasswordSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 type Props = {
 
 };
-export const LoginForm = (props: Props) => {
-  const searchParams = useSearchParams();
+export const ResetForm = (props: Props) => {
   const router = useRouter();
-  const urlError = searchParams.get('error');
-  const oauthMessage = urlError=== "OAuthAccountNotLinked"
-  ? "Email already in use with different provider" : undefined;
   const [isPending, startTransition] = React.useTransition();
   const [error, setError] = React.useState<string | undefined>();
   const [success, setSuccess] = React.useState<string | undefined>();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof ResetPasswordSchema>>({
+    resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
       email: '',
-      password: ''
     }
   })
 
-  const onSubmit = (data: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (data: z.infer<typeof ResetPasswordSchema>) => {
     setError(undefined);
     setSuccess(undefined);
+
     startTransition(() => {
-      login(data).then((res) => {
+      resetPassword(data).then((res) => {
+        console.log('res: >>', res);
         setError(res?.error);
-        // TODO: add when we add 2FA
+        // // TODO: add when we add 2FA
         setSuccess(res?.success);
       })
     })
   }
 
-  useEffect(() => {
-    if (oauthMessage) {
-      setError(oauthMessage);
-      router.push(LOGIN_ROUTE);
-    }
-  }, [oauthMessage])
-
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don'have an account?"
-      backButtonHref="/auth/register"
-      showSocial
+      headerLabel="Forgot your password?"
+      backButtonLabel="Back to login"
+      backButtonHref={LOGIN_ROUTE}
     >
       <Form
         {...form}
@@ -90,34 +77,6 @@ export const LoginForm = (props: Props) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='password'
-              render={({field}) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      type="password"
-                      placeholder="Password"
-                    />
-                  </FormControl>
-                  <Button
-                    className="px-0 font-normal"
-                    size="sm"
-                    variant="link"
-                    asChild
-                  >
-                    <Link href={RESET_PASSWORD_ROUTE}>
-                      Forgot password?
-                    </Link>
-                  </Button>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
           <FormError message={error} />
           <FormSuccess message={success} />
@@ -126,10 +85,9 @@ export const LoginForm = (props: Props) => {
             className="w-full"
             disabled={isPending}
           >
-            Login
+            Send reset link
           </Button>
         </form>
-
       </Form>
     </CardWrapper>
   );
