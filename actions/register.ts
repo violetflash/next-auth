@@ -3,10 +3,10 @@
 import { getUserByEmail } from '@/data/user';
 import { db } from '@/lib/db';
 import { sendVerificationEmail } from '@/lib/mail';
-import { generatedVerificationToken } from '@/lib/tokens';
+import { generateVerificationToken } from '@/lib/tokens';
 import { RegisterSchema } from '@/schemas';
-import { z } from 'zod';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   // in this action we must validate the values before proceeding
@@ -32,13 +32,13 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       password: hashedPassword,
       profile: {
         create: {
-          loginTime: new Date().toISOString(),
+          last_login_at: new Date(),
         }
       }
     }
   });
 
-  const verificationToken = await generatedVerificationToken(email);
+  const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
 

@@ -10,7 +10,7 @@ export const verifyToken = async (token: string) => {
     return { error: "Token does not exist." }
   }
 
-  const hasExpired = new Date(existingToken.expires) < new Date();
+  const hasExpired = new Date(existingToken.expires_at) < new Date();
 
   if (hasExpired) {
     return { error: "Token has expired." }
@@ -31,7 +31,7 @@ export const verifyToken = async (token: string) => {
       id: existingUser.id
     },
     data: {
-      emailVerified: new Date(),
+      email_verified_at: new Date(),
 
       // For the change email feature logic:
       // user can change and update his email via generated token and new-verification confirmation

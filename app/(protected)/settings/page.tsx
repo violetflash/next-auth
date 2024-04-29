@@ -1,7 +1,5 @@
 import { auth, signOut } from '@/auth';
 import { Button } from '@/components/ui/button';
-import { getUserLoginTime, getUserProfile, refreshUserLoginTime } from '@/data/user';
-import { getTimeDifferenceString } from '@/lib/helpers/get-time-difference-string';
 
 type Props = {
 
@@ -16,7 +14,7 @@ const SettingsPage = async (props: Props) => {
       {/*{userStatsInfo && (*/}
       {/*  <div>*/}
       {/*    Since your last visit: {getTimeDifferenceString({*/}
-      {/*    startTime: userStatsInfo?.loginTime,*/}
+      {/*    startTime: userStatsInfo?.last_login_at,*/}
       {/*    endTime: new Date().toISOString()*/}
       {/*  })}*/}
       {/*  </div>*/}

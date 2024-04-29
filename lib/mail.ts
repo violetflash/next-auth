@@ -48,4 +48,25 @@ export const sendResetPasswordEmail = async (email: string, token: string) => {
   } catch (e) {
     console.log('e: >>', e);
   }
+};
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+
+  try {
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
+      to: email,
+      subject: '2FA Code',
+      html: `
+        <h2>Your 2FA Code:</h2>
+        <h1>${token}</h1>
+        <p>Please copy and paste the following code into your 2FA app</p>
+      `,
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      }
+    });
+  } catch (e) {
+    console.log('e: >>', e);
+  }
 }

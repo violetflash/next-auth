@@ -34,14 +34,14 @@ export const getUserProfile = async (userId?: string) => {
   }
 
   const profile = await db.profile.findUnique({
-    where: { userId },
-    select: { loginTime: true }
+    where: { user_id: userId },
+    select: { last_login_at: true }
   });
 
   try {
     return await db.profile.findUnique({
       where: {
-        userId
+        user_id: userId
       }
     });
   } catch (e) {
@@ -55,8 +55,8 @@ export const getUserLoginTime = async (userId?: string) => {
   }
   try {
     return await db.profile.findUnique({
-      where: { userId },
-      select: { loginTime: true }
+      where: { user_id: userId },
+      select: { last_login_at: true }
     });
   } catch (e) {
     console.log(e)
@@ -69,8 +69,8 @@ export const refreshUserLoginTime = async (userId?: string) => {
   }
   try {
     return await db.profile.update({
-      where: { userId },
-      data: { loginTime: new Date().toISOString() }
+      where: { user_id: userId },
+      data: { last_login_at: new Date() }
     });
   } catch (e) {
     console.log(e)
