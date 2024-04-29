@@ -1,4 +1,5 @@
 import authConfig from "@/auth.config"
+import { get2FAConfirmationByUserId } from '@/data/two-factor-cinfirmation';
 import { getUserById } from '@/data/user';
 import { db } from "@/lib/db";
 import { AUTH_ERROR_ROUTE, LOGIN_ROUTE } from '@/lib/routes-constants';
@@ -78,9 +79,20 @@ export const {
       // For credentials case
       const existingUser = await getUserById(user?.id);
       // Prevent from signing in without email verification
-      if (!existingUser?.emailVerified) return false;
+      if (!existingUser?.email_verified_at) return false;
 
       // TODO Add 2FA check
+      if (existingUser?.is_two_factor_enabled) {
+        // check if user has two factor (created in login.ts action)
+        const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.id);
+        console.log('twoFactorConfirmation: >>', twoFactorConfirmation);
+        if (!twoFactorConfirmation) return false;
+        // TODO but we can add expired_at field in 2FA confirmation prisma model, and check if it's expired first
+        // Every time user logs in, it will be asked for 2FA code again
+        // Delete 2FA confirmation for the next login
+        await db.twoFactorConfirmation.delete({ where: { id: twoFactorConfirmation.id } });
+        return true;
+      }
       return true;
     }
   },
@@ -92,7 +104,7 @@ export const {
     async linkAccount({ account, profile, user }) {
       await  db.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() }
+        data: { email_verified_at: new Date() }
       })
     }
   },

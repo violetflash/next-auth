@@ -1,14 +1,17 @@
 import { getResetPasswordTokenByEmail } from '@/data/reset-token';
+import { getTwoFactorTokenByEmail } from '@/data/two-factor-token';
 import { getVerificationTokenByEmail } from '@/data/verification-token';
 import { db } from '@/lib/db';
+import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
-export const generatedVerificationToken = async (email: string) => {
+export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
-
+  // TODO Change expiration time to 15 minutes
+  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
   const existingToken = await getVerificationTokenByEmail(email);
 
+  // anytime we generate a new token, we delete the old one
   if (existingToken) {
     await db.verificationToken.delete({
       where: {
@@ -21,17 +24,18 @@ export const generatedVerificationToken = async (email: string) => {
     data: {
       email,
       token,
-      expires
+      expires_at: expiresAt
     }
   });
 };
 
 export const generateResetPasswordToken = async (email: string) => {
   const token = uuidv4();
-  const expires = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
-
+  // TODO Change expiration time to 15 minutes
+  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
   const existingToken = await getResetPasswordTokenByEmail(email);
 
+  // anytime we generate a new token, we delete the old one
   if (existingToken) {
     await db.resetPasswordToken.delete({
       where: {
@@ -44,7 +48,31 @@ export const generateResetPasswordToken = async (email: string) => {
     data: {
       email,
       token,
-      expires
+      expires_at: expiresAt
     }
   });
 };
+
+export const generateTwoFactorToken = async (email: string) => {
+  const token = crypto.randomInt(100_000, 1_000_000).toString();
+  // TODO Change expiration time to 15 minutes
+  const expiresAt = new Date(new Date().getTime() + 3600 * 1000); // 1 hour
+  const existingToken = await getTwoFactorTokenByEmail(email);
+
+  // anytime we generate a new token, we delete the old one
+  if (existingToken) {
+    await db.twoFactorAuthToken.delete({
+      where: {
+        id: existingToken.id
+      }
+    })
+  }
+
+  return db.twoFactorAuthToken.create({
+    data: {
+      email,
+      token,
+      expires_at: expiresAt
+    }
+  })
+}

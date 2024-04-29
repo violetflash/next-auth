@@ -30,7 +30,7 @@ export const setNewPassword = async (
     return { error: 'Invalid token!' };
   }
 
-  if (new Date(existingToken.expires) < new Date()) {
+  if (new Date(existingToken.expires_at) < new Date()) {
     return { error: 'Token has expired!' };
   }
 

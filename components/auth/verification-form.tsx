@@ -13,7 +13,7 @@ import { BeatLoader } from 'react-spinners';
 type Props = {
 
 };
-export const NewVerificationForm = memo((props: Props) => {
+export const NewVerificationForm = memo(function NewVerificationForm(props: Props) {
   const searchParams = useSearchParams();
   const { push } = useRouter();
   const token = searchParams.get(TOKEN_QUERY_PARAM);
