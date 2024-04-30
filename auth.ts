@@ -7,21 +7,23 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from '@prisma/client';
 import NextAuth, { type DefaultSession } from "next-auth"
 
+export type ExtendedUser = {
+  role: UserRole
+  is_two_factor_enabled: boolean
+} & DefaultSession["user"];
+
 declare module "next-auth" {
   /**
    * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session {
-    user: {
-      /** The user's postal address. */
-      role: UserRole;
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
        * In this case, the default session user properties will be overwritten,
        * with the new ones defined above. To keep the default session user properties,
        * you need to add them back into the newly declared interface.
        */
-    } & DefaultSession["user"]
+    user: ExtendedUser;
   }
 }
 
@@ -34,9 +36,14 @@ export const {
   callbacks: {
     // https://next-auth.js.org/configuration/callbacks
     async session({ session, token }) {
+      console.log('token from session: >>', token);
       // get user id from session token
       if (token.sub && session.user) {
         session.user.id = token.sub;
+      }
+
+      if (session.user) {
+        session.user.is_two_factor_enabled = (token.is_two_factor_enabled || false) as boolean;
       }
 
       if (token.role && session.user) {
@@ -48,12 +55,15 @@ export const {
       return session;
     },
     async jwt({ token }) {
+      console.log('token: >>', token);
       if (!token.sub) return token; // not logged in case
 
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
 
       token.role = existingUser.role;
+      // ADD 2FA ANCHOR FROM USER
+      token.is_two_factor_enabled = existingUser.is_two_factor_enabled;
       return token;
     },
     signIn: async ({ user, account, profile, email, credentials }) => {
