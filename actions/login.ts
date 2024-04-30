@@ -32,7 +32,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
 
-  if (existingUser && !existingUser.email_verified_at) {
+  if (existingUser && !existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(existingUser.email);
 
     await sendVerificationEmail(verificationToken.email, verificationToken.token);
