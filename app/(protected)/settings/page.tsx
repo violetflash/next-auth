@@ -1,16 +1,21 @@
-import { auth, signOut } from '@/auth';
+'use client';
+import { logout } from '@/actions/logout';
 import { Button } from '@/components/ui/button';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 type Props = {
 
 };
-const SettingsPage = async (props: Props) => {
-  const session = await auth();
+const SettingsPage =  (props: Props) => {
+  const user = useCurrentUser();
   // const userStatsInfo = await getUserLoginTime(session?.user?.id);
 
+  const onClickSignOut = () => {
+    logout();
+  }
+
   return (
-    <div>
-      {JSON.stringify(session, null, 2)}
+    <div className="bg-white p-10 rounded-xl">
       {/*{userStatsInfo && (*/}
       {/*  <div>*/}
       {/*    Since your last visit: {getTimeDifferenceString({*/}
@@ -19,18 +24,9 @@ const SettingsPage = async (props: Props) => {
       {/*  })}*/}
       {/*  </div>*/}
       {/*)}*/}
-      <form
-        action={async () => {
-          "use server";
-          // TODO Error if user logged in by OAuth
-          // await refreshUserLoginTime(session?.user?.id);
-          await signOut();
-        }}
-      >
-        <Button type="submit">
-          Sign out
-        </Button>
-      </form>
+      <Button onClick={onClickSignOut}>
+        Sign out
+      </Button>
     </div>
   );
 };

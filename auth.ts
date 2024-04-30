@@ -79,7 +79,7 @@ export const {
       // For credentials case
       const existingUser = await getUserById(user?.id);
       // Prevent from signing in without email verification
-      if (!existingUser?.email_verified_at) return false;
+      if (!existingUser?.emailVerified) return false;
 
       // TODO Add 2FA check
       if (existingUser?.is_two_factor_enabled) {
@@ -104,7 +104,7 @@ export const {
     async linkAccount({ account, profile, user }) {
       await  db.user.update({
         where: { id: user.id },
-        data: { email_verified_at: new Date() }
+        data: { emailVerified: new Date() }
       })
     }
   },
