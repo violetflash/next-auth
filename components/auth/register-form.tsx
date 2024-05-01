@@ -1,24 +1,17 @@
 'use client';
 // @flow
-import { login } from '@/actions/login';
 import { register } from '@/actions/register';
 import { CardWrapper } from '@/components/auth/card-wrapper';
-import { FormError } from '@/components/form-error';
-import { FormSuccess } from '@/components/form-success';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LoginSchema, RegisterSchema } from '@/schemas';
+import { LOGIN_ROUTE } from '@/lib/routes-constants';
+import { RegisterSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
-import {
-  FormLabel,
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage
-} from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 type Props = {
@@ -26,8 +19,7 @@ type Props = {
 };
 export const RegisterForm = (props: Props) => {
   const [isPending, startTransition] = React.useTransition();
-  const [error, setError] = React.useState<string | undefined>();
-  const [success, setSuccess] = React.useState<string | undefined>();
+  const { push } = useRouter();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -39,12 +31,14 @@ export const RegisterForm = (props: Props) => {
   })
 
   const onSubmit = (data: z.infer<typeof RegisterSchema>) => {
-    setError(undefined);
-    setSuccess(undefined);
     startTransition(() => {
       register(data).then((res) => {
-        setError(res.error);
-        setSuccess(res.success);
+        if (res.error) {
+          toast.error(res.error);
+          return;
+        }
+        toast.success(res.success);
+        push(LOGIN_ROUTE);
       })
     })
   }
@@ -52,7 +46,7 @@ export const RegisterForm = (props: Props) => {
     <CardWrapper
       headerLabel="Create an account"
       backButtonLabel="Already have an account?"
-      backButtonHref="/auth/login"
+      backButtonHref={LOGIN_ROUTE}
       showSocial
     >
       <Form
@@ -118,8 +112,6 @@ export const RegisterForm = (props: Props) => {
               )}
             />
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
           <Button
             type="submit"
             className="w-full"
