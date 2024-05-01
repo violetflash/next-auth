@@ -4,18 +4,19 @@
 import { Button } from '@/components/ui/button';
 import { DEFAULT_LOGIN_REDIRECT } from '@/lib/routes-constants';
 import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import * as React from 'react';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { SlSocialVkontakte } from 'react-icons/sl';
 
 type Props = {};
 export const Social = (props: Props) => {
-
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const onClick = (provider: "google" | "github" ) => {
 
     signIn(provider, {
-      callbackUrl: DEFAULT_LOGIN_REDIRECT
+      callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT
     });
   };
 
@@ -36,14 +37,6 @@ export const Social = (props: Props) => {
         onClick={() => onClick("github")}
       >
         <FaGithub className="h-5 w-5" /> Sign in with GitHub
-      </Button>
-      <Button
-        className="w-full flex items-center gap-x-2"
-        variant="outline"
-        size="lg"
-        onClick={() => {}}
-      >
-        <SlSocialVkontakte className="h-5 w-5" /> Sign in with VK
       </Button>
     </div>
   );
