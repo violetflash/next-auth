@@ -22,6 +22,7 @@ type Props = {
 };
 export const LoginForm = (props: Props) => {
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const router = useRouter();
   const urlError = searchParams.get('error');
   const oauthMessage = urlError=== "OAuthAccountNotLinked"
@@ -43,7 +44,7 @@ export const LoginForm = (props: Props) => {
     setError(undefined);
     setSuccess(undefined);
     startTransition(() => {
-      login(data)
+      login(data, callbackUrl)
         .then((res) => {
           if (res?.error) {
             form.reset();

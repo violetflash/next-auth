@@ -33,9 +33,18 @@ export default auth((req) => {
   }
 
   if (!isPublicRoute && !isLoggedIn) {
+
+    let callbackUrl = nextUrl.pathname;
+    if (nextUrl.search) {
+      callbackUrl += nextUrl.search;
+    }
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
     // if the user is not logged in and trying to access a public route
     // -> redirect him to the login page
-    return Response.redirect(new URL(LOGIN_ROUTE, nextUrl)); // second param is the base url to create an absolute url
+    return Response.redirect(new URL(
+      `${LOGIN_ROUTE}?callbackUrl=${encodedCallbackUrl}`,
+      nextUrl
+    )); // second param is the base url to create an absolute url
   }
 
   return;
