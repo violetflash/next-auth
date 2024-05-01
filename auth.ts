@@ -1,4 +1,5 @@
 import authConfig from "@/auth.config"
+import { getAccountByUserId } from '@/data/account';
 import { get2FAConfirmationByUserId } from '@/data/two-factor-cinfirmation';
 import { getUserById } from '@/data/user';
 import { db } from "@/lib/db";
@@ -8,8 +9,9 @@ import { UserRole } from '@prisma/client';
 import NextAuth, { type DefaultSession } from "next-auth"
 
 export type ExtendedUser = {
-  role: UserRole
-  is_two_factor_enabled: boolean
+  role: UserRole;
+  is_two_factor_enabled: boolean;
+  is_oauth: boolean;
 } & DefaultSession["user"];
 
 declare module "next-auth" {
@@ -36,7 +38,6 @@ export const {
   callbacks: {
     // https://next-auth.js.org/configuration/callbacks
     async session({ session, token }) {
-      console.log('token from session: >>', token);
       // get user id from session token
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -52,14 +53,31 @@ export const {
           role: token.role
         }
       }
+
+      // UPDATES FROM JWT TOKEN
+      if (session.user) {
+        session.user.name = token.name;
+        if (token.email) session.user.email = token.email;
+        session.user.role = token.role;
+        session.user.is_oauth = token.is_oauth as boolean;
+      }
+
       return session;
     },
     async jwt({ token }) {
-      console.log('token: >>', token);
       if (!token.sub) return token; // not logged in case
 
       const existingUser = await getUserById(token.sub);
       if (!existingUser) return token;
+
+      // CHECK IF USER HAS ACCOUNT (Credentials auth type) or NOT (OAuth auth type)
+      const existingAccount = await getAccountByUserId(existingUser.id);
+      token.is_oauth = Boolean(existingAccount);
+
+      // UPDATE USER LOGIC IS HERE
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
 
       token.role = existingUser.role;
       // ADD 2FA ANCHOR FROM USER
@@ -67,9 +85,6 @@ export const {
       return token;
     },
     signIn: async ({ user, account, profile, email, credentials }) => {
-      console.log({
-        user, account
-      })
 
       // TODO тут проблема при авторизации через OAuth, призма кидает ошибку в консоль
       // if (profile && !profile.loginTime) {

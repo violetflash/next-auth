@@ -7,7 +7,6 @@ import { ResetPasswordSchema } from '@/schemas';
 import { z } from 'zod';
 
 export const resetPassword = async (values: z.infer<typeof ResetPasswordSchema>) => {
-  console.log('values: >>', values);
 
   const validated = ResetPasswordSchema.safeParse(values);
 
@@ -24,7 +23,10 @@ export const resetPassword = async (values: z.infer<typeof ResetPasswordSchema>)
 
   // TODO generate reset token and send email
   const newResetPasswordToken = await generateResetPasswordToken(email);
-  await sendResetPasswordEmail(newResetPasswordToken.email, newResetPasswordToken.token);
+  await sendResetPasswordEmail({
+    email: newResetPasswordToken.email,
+    token: newResetPasswordToken.token
+  });
 
   return { success: 'Reset email sent' };
 }

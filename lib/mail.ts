@@ -2,9 +2,14 @@ import { TOKEN_QUERY_PARAM } from '@/lib/constants';
 import { NEW_PASSWORD_ROUTE, VERIFICATION_ROUTE } from '@/lib/routes-constants';
 import { Resend } from 'resend';
 
+type SendEmailProps = {
+  email: string;
+  token: string;
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendVerificationEmail = async (email: string, token: string) => {
+export const sendVerificationEmail = async ({ email, token }: SendEmailProps) => {
 
   const confirmationUrl = `http://localhost:3000${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
@@ -27,7 +32,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   }
 };
 
-export const sendResetPasswordEmail = async (email: string, token: string) => {
+export const sendResetPasswordEmail = async ({ email, token }: SendEmailProps) => {
 
   const resetPasswordUrl = `http://localhost:3000${NEW_PASSWORD_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
