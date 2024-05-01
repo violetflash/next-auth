@@ -9,9 +9,11 @@ type SendEmailProps = {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+const domain = process.env.NEXT_PUBLIC_APP_URL;
+
 export const sendVerificationEmail = async ({ email, token }: SendEmailProps) => {
 
-  const confirmationUrl = `http://localhost:3000${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
+  const confirmationUrl = `${domain}${VERIFICATION_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
   try {
     await resend.emails.send({
@@ -34,7 +36,7 @@ export const sendVerificationEmail = async ({ email, token }: SendEmailProps) =>
 
 export const sendResetPasswordEmail = async ({ email, token }: SendEmailProps) => {
 
-  const resetPasswordUrl = `http://localhost:3000${NEW_PASSWORD_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
+  const resetPasswordUrl = `${domain}${NEW_PASSWORD_ROUTE}?${TOKEN_QUERY_PARAM}=${token}`;
 
   try {
     await resend.emails.send({
