@@ -24,7 +24,6 @@ export const setNewPassword = async (
 
   const existingToken = await getResetPasswordTokenByToken(token);
 
-  console.log('existingToken: >>', existingToken);
 
   if (!existingToken) {
     return { error: 'Invalid token!' };
@@ -42,7 +41,6 @@ export const setNewPassword = async (
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  console.log('existingUser: >>', existingUser);
   await db.user.update({
     where: { id: existingUser.id },
     data: { password: hashedPassword }

@@ -110,7 +110,6 @@ export const {
       if (existingUser?.is_two_factor_enabled) {
         // check if user has two factor (created in login.ts action)
         const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.id);
-        console.log('twoFactorConfirmation: >>', twoFactorConfirmation);
         if (!twoFactorConfirmation) return false;
         // TODO but we can add expired_at field in 2FA confirmation prisma model, and check if it's expired first
         // Every time user logs in, it will be asked for 2FA code again
