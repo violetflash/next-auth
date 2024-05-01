@@ -36,7 +36,6 @@ export const {
   callbacks: {
     // https://next-auth.js.org/configuration/callbacks
     async session({ session, token }) {
-      console.log('token from session: >>', token);
       // get user id from session token
       if (token.sub && session.user) {
         session.user.id = token.sub;
@@ -55,7 +54,6 @@ export const {
       return session;
     },
     async jwt({ token }) {
-      console.log('token: >>', token);
       if (!token.sub) return token; // not logged in case
 
       const existingUser = await getUserById(token.sub);
@@ -95,7 +93,6 @@ export const {
       if (existingUser?.is_two_factor_enabled) {
         // check if user has two factor (created in login.ts action)
         const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.id);
-        console.log('twoFactorConfirmation: >>', twoFactorConfirmation);
         if (!twoFactorConfirmation) return false;
         // TODO but we can add expired_at field in 2FA confirmation prisma model, and check if it's expired first
         // Every time user logs in, it will be asked for 2FA code again

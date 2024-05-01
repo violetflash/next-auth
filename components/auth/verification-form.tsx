@@ -26,8 +26,6 @@ export const NewVerificationForm = memo(function NewVerificationForm(props: Prop
     // cover the dev strict mode bug when useEffect is called twice
     // therefore on the second call our token will already be verified and deleted
     if (isVerified.current) return;
-    console.log('isVerified.current: >>', isVerified.current);
-    console.log('count')
     if (!token) {
       setError('Missing token');
       return;

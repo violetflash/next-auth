@@ -29,7 +29,6 @@ const Row = ({ label, value }: { label: string; value: string | boolean }) => {
 }
 
 export const UserInfo = ({ user, label }: Props) => {
-  console.log('user: >>', user);
   return (
     <Card className="w-[600px] shadow-md">
       <CardHeader>

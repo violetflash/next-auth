@@ -7,7 +7,6 @@ import { ResetPasswordSchema } from '@/schemas';
 import { z } from 'zod';
 
 export const resetPassword = async (values: z.infer<typeof ResetPasswordSchema>) => {
-  console.log('values: >>', values);
 
   const validated = ResetPasswordSchema.safeParse(values);
 

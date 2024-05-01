@@ -10,7 +10,6 @@ const font = Poppins({
 });
 
 export default function Home() {
-  console.log('WHERE AM I LOG?')
   return (
     <main className={cn(
       'flex h-full flex-col items-center justify-center',
